@@ -1,0 +1,171 @@
+<!-- popup -->
+<div
+  class="modal fade bs-example-modal-sm"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel2">Modal title</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h4>Text in a modal</h4>
+        <p>
+          Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+          Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
+        </p>
+        <p>
+          Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
+          magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
+          ullamcorper nulla non metus auctor fringilla.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- jQuery -->
+<script src="/admins/vendors/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="/admins/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<!-- FastClick -->
+<script src="/admins/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/admins/vendors/nprogress/nprogress.js"></script>
+<!-- Chart.js -->
+<script src="/admins/vendors/Chart.js/dist/Chart.min.js"></script>
+<!-- gauge.js -->
+<script src="/admins/vendors/gauge.js/dist/gauge.min.js"></script>
+<!-- bootstrap-progressbar -->
+<script src="/admins/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+<!-- iCheck -->
+<script src="/admins/vendors/iCheck/icheck.min.js"></script>
+<!-- Skycons -->
+<script src="/admins/vendors/skycons/skycons.js"></script>
+<!-- Flot -->
+<script src="/admins/vendors/Flot/jquery.flot.js"></script>
+<script src="/admins/vendors/Flot/jquery.flot.pie.js"></script>
+<script src="/admins/vendors/Flot/jquery.flot.time.js"></script>
+<script src="/admins/vendors/Flot/jquery.flot.stack.js"></script>
+<script src="/admins/vendors/Flot/jquery.flot.resize.js"></script>
+<!-- Flot plugins -->
+<script src="/admins/vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
+<script src="/admins/vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
+<script src="/admins/vendors/flot.curvedlines/curvedLines.js"></script>
+<!-- DateJS -->
+<script src="/admins/vendors/DateJS/build/date.js"></script>
+<!-- JQVMap -->
+<script src="/admins/vendors/jqvmap/dist/jquery.vmap.js"></script>
+<script src="/admins/vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+<script src="/admins/vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+<!-- bootstrap-daterangepicker -->
+<script src="/admins/vendors/moment/min/moment.min.js"></script>
+<script src="/admins/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="/admins/build/js/custom.min.js"></script>
+
+<!-- Xử lý form -->
+<script>
+  function ChangeToSlug() {
+    var title, slug;
+
+    //Lấy text từ thẻ input title
+    title = document.getElementById("name").value;
+
+    //Đổi chữ hoa thành chữ thường
+    slug = title.toLowerCase();
+
+    //Đổi ký tự có dấu thành không dấu
+    slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, "a");
+    slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, "e");
+    slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, "i");
+    slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, "o");
+    slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, "u");
+    slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, "y");
+    slug = slug.replace(/đ/gi, "d");
+    //Xóa các ký tự đặt biệt
+    slug = slug.replace(
+      /\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi,
+      ""
+    );
+    //Đổi khoảng trắng thành ký tự gạch ngang
+    slug = slug.replace(/ /gi, "-");
+    //Đổi nhiều ký tự gạch ngang liên tiếp thành 1 ký tự gạch ngang
+    //Phòng trường hợp người nhập vào quá nhiều ký tự trắng
+    slug = slug.replace(/\-\-\-\-\-/gi, "-");
+    slug = slug.replace(/\-\-\-\-/gi, "-");
+    slug = slug.replace(/\-\-\-/gi, "-");
+    slug = slug.replace(/\-\-/gi, "-");
+    //Xóa các ký tự gạch ngang ở đầu và cuối
+    slug = "@" + slug + "@";
+    slug = slug.replace(/\@\-|\-\@|\@/gi, "");
+    //In slug ra textbox có id “slug”
+    document.getElementById("slug").value = slug;
+  }
+
+  $(document).ready(function () {
+    $("#Form").on("submit", function (e) {
+      e.preventDefault();
+
+      //Khai báo
+      var name = "";
+      var slug = "";
+      var parents = "";
+      var error = "";
+      var flag = 1;
+
+      //Lấy dữ liệu
+      name = $("#name").val();
+      slug = $("#slug").val();
+      parents = $("#parents").val();
+
+      //Kiểm tra dữ liệu
+      if (name == "") {
+        flag = 0;
+        $(".error_name").text("Vui lòng nhập Tên");
+      } else {
+        $(".error_name").text("");
+      }
+
+      if (slug == "") {
+        flag = 0;
+        $(".error_slug").text("Vui lòng nhập Slug");
+      } else {
+        $(".error_slug").text("");
+      }
+
+      //Tổng kết
+      if (flag == 1) {
+        $.ajax({
+          url: "/admin/categories/proccessForm",
+          type: "POST",
+          data: { name, slug, parents },
+          success: function (result) {
+            console.log(result);
+          },
+        });
+
+        return false;
+      }
+
+      //   alert(name + "/" + slug + "/" + parents);
+    });
+  });
+</script>
