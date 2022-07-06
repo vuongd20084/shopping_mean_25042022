@@ -8,7 +8,7 @@
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" id="myModalLabel2">Modal title</h4>
+        <h4 class="modal-title" id="myModalLabel2">Xoá dữ liệu</h4>
         <button
           type="button"
           class="close"
@@ -19,22 +19,20 @@
         </button>
       </div>
       <div class="modal-body">
-        <h4>Text in a modal</h4>
-        <p>
-          Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-          Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-        </p>
-        <p>
-          Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
-          magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
-          ullamcorper nulla non metus auctor fringilla.
-        </p>
+        <p>Bạn chắc chắn muốn xoá?</p>
+        <b><span id="name" class="text-danger"></span></b>
+        <input type="hidden" id="idXoa" />
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-          Close
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-dismiss="modal"
+          onclick="xoa()"
+        >
+          Xoá
         </button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary">Thoát</button>
       </div>
     </div>
   </div>
@@ -83,6 +81,29 @@
 
 <!-- Xử lý form -->
 <script>
+  function openPopup(id = "", name = "") {
+    $("#name").text(name);
+    $("#idXoa").val(id);
+  }
+
+  function xoa() {
+    var id = $("#idXoa").val();
+
+    //gửi ajax
+    $.ajax({
+      url: "/admin/categories/delete",
+      type: "POST",
+      data: { id },
+      success: function (response) {
+        alert(response.results);
+
+        if (response.kq == 1) {
+          $("#" + id).remove();
+        }
+      },
+    });
+  }
+
   function ChangeToSlug() {
     var title, slug;
 
@@ -157,8 +178,14 @@
           url: "/admin/categories/proccessForm",
           type: "POST",
           data: { name, slug, parents },
-          success: function (result) {
-            console.log(result);
+          success: function (response) {
+            console.log(response);
+
+            if (response.kq == 1) {
+              alert(response.result);
+              //Chuyển hướng về bảng dữ liệu
+              window.location.href = "/admin/categories/index";
+            }
           },
         });
 

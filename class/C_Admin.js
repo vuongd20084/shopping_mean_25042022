@@ -98,5 +98,21 @@ class C_Admin {
     <span class="error error_`+ _name + `"></span>
     `;
   }
+
+  dequy(array = [], id = null) {
+    var json = []
+
+    array.forEach(e => {
+      if (e.parents == id) {//thằng cha
+        json.push({
+          name: e.name,
+          // slug:e.slug,
+          childs: this.dequy(array, e._id)
+        })
+      }
+    })
+
+    return json
+  }
 }
 module.exports = C_Admin;
