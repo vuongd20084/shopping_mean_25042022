@@ -5,10 +5,10 @@ class Categories extends Html {
         var str = ''
         array.forEach(e => {
             if (e.element == 'input') {
-                str += this.html_input(e.type, e.name, e.id, e.class, e.placeholder, e.required, e.changeTitleToSlug);
+                str += this.html_input(e.type, e.name, e.value, e.id, e.class, e.placeholder, e.required, e.changeTitleToSlug);
 
             } else if (e.element == 'select') {
-                str += this.html_select(e.array, e.name, e.id, e.class, e.required);
+                str += this.html_select(e.array, e.name, e.id, e.class, e.required, e.dequy);
             }
         })
         return str;
@@ -50,7 +50,7 @@ class Categories extends Html {
                         <input type="checkbox" name="status">
                     </td>`
                 str += `<td class=" last">
-                        <a href="/admin/categories/edit/<%=i%>" class="btn btn-info btn-sm">
+                        <a href="/admin/categories/edit/`+ e._id + `" class="btn btn-info btn-sm">
                             <span class="glyphicon glyphicon-edit"></span> Sửa</a>
                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
                             data-target=".bs-example-modal-sm" onclick="openPopup('`+ e._id + `',` + `'` + e.name + `')">
@@ -59,7 +59,7 @@ class Categories extends Html {
                 str += '</tr>'
 
                 //Lấy danh sách của cấp con
-                str += this.get_html_tbody(array, '|----- ', e._id)
+                str += this.get_html_tbody(array, char + '|----- ', e._id)
             }
         })
         return str;

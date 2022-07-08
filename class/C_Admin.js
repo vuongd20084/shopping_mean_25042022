@@ -31,6 +31,7 @@ class C_Admin {
   input(
     _type = "text",
     _name = "",
+    _value = "",
     _id = "",
     _class = "",
     _placeholder = "",
@@ -44,6 +45,7 @@ class C_Admin {
     return `<input 
       type="`+ _type + `" 
       name="`+ _name + `" 
+      value="`+ _value + `" 
       id="` + _id + `" 
       class="`+ _class + ` form-control"
       placeholder="`+ _placeholder + `"  ` + changeTitleToSlug +
@@ -58,15 +60,23 @@ class C_Admin {
     _name = "",
     _id = "",
     _class = "",
-    _required = true
+    _required = true,
+    _dequy = false
   ) {
     var s_required = _required == true ? "required" : "";
 
     var str = '<option value="">--Chọn--</option>'
 
-    _array.forEach(e => {
-      str += '<option value="' + e.value + '">' + e.name + '</option>'
-    });
+    //Xét có đệ quy hay không
+    if (_dequy == true) {
+      str += this.dequy_select(_array)
+    } else {
+      _array.forEach(e => {
+        str += '<option value="' + e.value + '">' + e.name + '</option>'
+      });
+    }
+
+
 
     return `<select
         name="`+ _name + `"
@@ -113,6 +123,23 @@ class C_Admin {
     })
 
     return json
+  }
+
+  dequy_select(_array, char = '', id = '') {
+    var str = ''
+
+    _array.forEach(e => {
+      if (e.parents == id) {  //thằng cha
+
+        //Xét selected
+        var selected = (e._id == e.selected) ? 'selected' : ''
+
+        str += '<option value="' + e.value + '"' + selected + '>' + char + e.name + '</option>'
+        str += this.dequy_select(_array, char + '|----- ', e._id)
+      }
+    });
+
+    return str
   }
 }
 module.exports = C_Admin;

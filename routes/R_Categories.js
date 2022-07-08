@@ -68,7 +68,12 @@ router.get("/add", async (req, res) => {
   var old_array = await categoryModel.find()
 
   old_array.forEach(e => {
-    new_array.push({ value: e._id, name: e.name })
+    new_array.push({
+      _id: e._id.toString(),
+      parents: (e.parents == null) ? '' : e.parents.toString(),
+      name: e.name,
+      value: e._id,
+    })
   })
   const List_Categories = new_array
 
@@ -101,7 +106,8 @@ router.get("/add", async (req, res) => {
       id: "parents",
       class: "parents",
       placeholder: "Nhập Slug",
-      required: false
+      required: false,
+      dequy: true
     },
   ];
 
@@ -112,12 +118,87 @@ router.get("/add", async (req, res) => {
   res.render("admins/V_index", { V_Main, List_Form });
 });
 
-router.get("/edit/:id", (req, res) => {
-  // Sử dụng class C_Admin
-  var use_C_Admin = new C_Admin(req.originalUrl);
+router.get("/edit/:id", (req, res) => {// Sử dụng class C_Admin
+  var _id = req.params.id
 
-  var V_Main = use_C_Admin.get_views("V_Form");
-  res.render("admins/V_index", { V_Main });
+  categoryModel
+    .find({ _id })
+    .exec(async (err, data) => {
+      if (err) {
+        res.send({ kq: 0, result: "Kết nối Database thất bại" })
+      } else {
+        if (data == '') {
+          res.send({ kq: 0, result: "Dữ liệu không tồn tại" })
+        } else {
+
+          var use_C_Admin = new C_Admin(req.originalUrl);
+          // //Sử dụng clas C_Html
+          // var use_C_Html = new C_Html(req.originalUrl);
+          //Sử dụng clas C_Categories
+          var use_C_Categories = new C_Categories(req.originalUrl);
+
+          //list categories
+
+          var new_array = []
+          var old_array = await categoryModel.find()
+
+          old_array.forEach(e => {
+            new_array.push({
+              _id: e._id.toString(),
+              parents: (e.parents == null) ? '' : e.parents.toString(),
+              name: e.name,
+              value: e._id,
+              selected: data[0].parents
+            })
+          })
+          const List_Categories = new_array
+
+          //form
+          const Array_Form = [
+            {
+              element: "input",
+              type: "text",
+              name: "name",
+              value: data[0].name,
+              id: "name",
+              class: "name",
+              placeholder: "Nhập Tên",
+              required: true,
+              changeTitleToSlug: true
+            },
+            {
+              element: "input",
+              type: "text",
+              name: "slug",
+              value: data[0].slug,
+              id: "slug",
+              class: "slug",
+              placeholder: "Nhập Slug",
+              required: true,
+              changeTitleToSlug: false
+            },
+            {
+              element: "select",
+              array: List_Categories,
+              name: "parents",
+              id: "parents",
+              class: "parents",
+              placeholder: "Nhập Slug",
+              required: false,
+              dequy: true
+            },
+          ];
+
+          //Gọi Html của form từ class html
+          const List_Form = use_C_Categories.get_html_form(Array_Form)
+
+          var V_Main = use_C_Admin.get_views("V_Form");
+          res.render("admins/V_index", { V_Main, List_Form });
+        }
+      }
+    })
+
+
 });
 
 router.post('/proccessForm', function (req, res) {
@@ -202,5 +283,7 @@ router.post('/delete', function (req, res) {
     })
 
 })
+
+
 
 module.exports = router;
