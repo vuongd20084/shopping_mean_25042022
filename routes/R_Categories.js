@@ -11,7 +11,6 @@ const C_Categories = require("../class/C_Categories");
 
 //Call models
 const categoryModel = require("../models/M_Categories");
-// const { Promise } = require("mongoose");
 
 
 
@@ -46,8 +45,15 @@ router.get("/index", async (req, res) => {
 
         const table = use_C_Categories.get_html_table(new_array)
 
+        //Cho /proccessForm biết không phải edit
+        var isEdit = 0
+
         var V_Main = use_C_Admin.get_views("V_Main");
-        res.render("admins/V_Index", { V_Main, table });
+        res.render("admins/V_Index", {
+          V_Main, table, isEdit,
+          nameModule: use_C_Admin.get_name_module(),
+          popupDelete: 1
+        });
       }
     })
 
@@ -114,8 +120,15 @@ router.get("/add", async (req, res) => {
   //Gọi Html của form từ class html
   const List_Form = use_C_Categories.get_html_form(Array_Form)
 
+  //Cho /proccessForm biết không phải edit
+  var isEdit = 0
+
   var V_Main = use_C_Admin.get_views("V_Form");
-  res.render("admins/V_index", { V_Main, List_Form });
+  res.render("admins/V_index", {
+    V_Main, List_Form, isEdit,
+    nameModule: use_C_Admin.get_name_module(),
+    popupDelete: 0
+  });
 });
 
 router.get("/edit/:id", (req, res) => {// Sử dụng class C_Admin
@@ -192,8 +205,15 @@ router.get("/edit/:id", (req, res) => {// Sử dụng class C_Admin
           //Gọi Html của form từ class html
           const List_Form = use_C_Categories.get_html_form(Array_Form)
 
+          //Cho /proccessForm biết đang là edit
+          var isEdit = data[0]._id
+
           var V_Main = use_C_Admin.get_views("V_Form");
-          res.render("admins/V_index", { V_Main, List_Form });
+          res.render("admins/V_index", {
+            V_Main, List_Form, isEdit,
+            nameModule: use_C_Admin.get_name_module(),
+            popupDelete: 0
+          });
         }
       }
     })
@@ -203,12 +223,14 @@ router.get("/edit/:id", (req, res) => {// Sử dụng class C_Admin
 
 router.post('/proccessForm', function (req, res) {
   var name = slug = parents = error = "";
+  var isEdit = 0
   var flag = 1;
 
   //Lấy dữ liệu
   name = req.body.name;
   slug = req.body.slug;
   parents = req.body.parents;
+  isEdit = req.body.isEdit
 
   //Kiểm tra dữ liệu
   if (name == "") {
@@ -236,15 +258,28 @@ router.post('/proccessForm', function (req, res) {
             //Thêm dữ liệu
             const obj = { name, slug, parents }
 
-            categoryModel
-              .create(obj, (err, data) => {
-                if (err) {
-                  console.log(err)
-                  res.send({ kq: 0, result: "Kết nối Database thất bại" })
-                } else {
-                  res.send({ kq: 1, result: "Đã thêm thành công" })
-                }
-              })
+            if (isEdit == 0) {
+              categoryModel
+                .create(obj, (err, data) => {
+                  if (err) {
+                    console.log(err)
+                    res.send({ kq: 0, result: "Kết nối Database thất bại" })
+                  } else {
+                    res.send({ kq: 1, result: "Đã thêm thành công" })
+                  }
+                })
+            } else {
+              categoryModel
+                .updateOne({ _id: isEdit }, obj, (err, data) => {
+                  if (err) {
+                    console.log(err)
+                    res.send({ kq: 0, result: "Kết nối Database thất bại" })
+                  } else {
+                    res.send({ kq: 1, result: "Đã cập nhật thành công" })
+                  }
+                })
+            }
+
           } else {
             res.send({ kq: 1, result: "Dữ liêu đã tồn tại" })
           }

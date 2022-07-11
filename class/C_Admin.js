@@ -12,7 +12,7 @@ class C_Admin {
   }
 
   get_views(path = "") {
-    return this.get_name_module() + "/" + path;
+    return path;
   }
 
   change_name(key = '') {
